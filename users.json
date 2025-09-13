@@ -1,0 +1,50 @@
+{
+    "users": [
+        {
+            "id": 1,
+            "username": "admin",
+            "password": "admin123",
+            "email": "admin@codeforall.org",
+            "role": "admin",
+            "created_at": "2025-01-13T10:00:00Z",
+            "last_login": null
+        },
+        {
+            "id": 2,
+            "username": "john_doe",
+            "password": "password123",
+            "email": "john@example.com",
+            "role": "user",
+            "created_at": "2025-01-13T10:30:00Z",
+            "last_login": null
+        },
+        {
+            "id": 3,
+            "username": "jane_smith",
+            "password": "password456",
+            "email": "jane@example.com",
+            "role": "user",
+            "created_at": "2025-01-13T11:00:00Z",
+            "last_login": null
+        },
+        {
+            "id": 1757774964591,
+            "username": "iauhgr",
+            "name": "iauhgr",
+            "email": "ghiruauhargi@gmail.com",
+            "password": "123123123",
+            "role": "user",
+            "created_at": "2025-09-13T14:49:24.591Z",
+            "last_login": null
+        },
+        {
+            "username": "yiboadmin",
+            "name": "yibo admin",
+            "email": "yang781067@sas.edu.sg",
+            "password": "yiboadmin123",
+            "role": "admin",
+            "id": 1757775758242
+        }
+    ],
+    "sessions": []
+}

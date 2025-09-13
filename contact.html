@@ -20,6 +20,10 @@
         
         .contact-form {
             flex: 1;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         
         .info-item {
@@ -149,7 +153,13 @@
         
         .submit-btn:hover {
             background-color: #2980b9;
-            transform: translateY(-3px);
+            transform: translateY(-2px);
+        }
+        
+        .submit-btn:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+            transform: none;
         }
         
         .map-container {
@@ -234,6 +244,7 @@
                     <li><a href="events.html">Events</a></li>
                     <li><a href="team.html">Our Team</a></li>
                     <li><a href="contact.html" class="active">Get Involved</a></li>
+                    <li><a href="admin.html" class="admin-link" style="display: none;">Admin Panel</a></li>
                     <li><a href="login.html">Login</a></li>
                 </ul>
             </nav>
@@ -262,7 +273,7 @@
                         </div>
                         <div class="info-content">
                             <h4>Our Location</h4>
-                            <p>Room 123, Main Building<br>School Name<br>City, State ZIP</p>
+                            <p>40 Woodlands Street 41<br>Singapore 738547</p>
                         </div>
                     </div>
                     
@@ -272,7 +283,17 @@
                         </div>
                         <div class="info-content">
                             <h4>Email Us</h4>
-                            <p><a href="mailto:codeforall@school.edu">codeforall@school.edu</a></p>
+                            <p><a href="mailto:zhu47578@sas.edu.sg">zhu47578@sas.edu.sg</a></p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="info-content">
+                            <h4>Phone</h4>
+                            <p><a href="tel:+6586472776">+65 8647 2776</a></p>
                         </div>
                     </div>
                     
@@ -293,6 +314,16 @@
                         <div class="info-content">
                             <h4>Faculty Advisors</h4>
                             <p>Dr. Emily Parker<br>Mr. Robert Turner</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <div class="info-content">
+                            <h4>Our Branches</h4>
+                            <p>Singapore (Main Campus)<br>Madrid, Spain<br>New York, USA<br>Detroit, USA</p>
                         </div>
                     </div>
                     
@@ -363,8 +394,8 @@
             </div>
             
             <div class="map-container">
-                <!-- Replace with actual Google Maps embed code for your school location -->
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.215573036728!2d-73.98509668459377!3d40.75838197932695!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25855c6480299%3A0x55194ec5a1ae072e!2sTimes%20Square!5m2!1s0x89c25855c6480299%3A0x55194ec5a1ae072e!2sTimes%20Square!5e0!3m2!1sen!2sus!4v1635784293017!5m2!1sen!2sus" allowfullscreen="" loading="lazy"></iframe>
+                <!-- Google Maps embed for Singapore location -->
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3988.6516885894!2d103.78668731475394!3d1.3644202990313!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31da0f8a7b0b0b0b%3A0x0!2s40%20Woodlands%20Street%2041%2C%20Singapore%20738547!5e0!3m2!1sen!2ssg!4v1635784293017!5m2!1sen!2ssg" allowfullscreen="" loading="lazy"></iframe>
             </div>
         </div>
     </section>
@@ -452,17 +483,18 @@
                 </div>
                 <div class="footer-contact">
                     <h4>Contact Us</h4>
-                    <p><i class="fas fa-envelope"></i> codeforall@school.edu</p>
-                    <p><i class="fas fa-map-marker-alt"></i> Room 123, School Building</p>
+                    <p><i class="fas fa-envelope"></i> zhu47578@sas.edu.sg</p>
+                    <p><i class="fas fa-phone"></i> +65 8647 2776</p>
+                    <p><i class="fas fa-map-marker-alt"></i> 40 Woodlands Street 41, Singapore 738547</p>
                     <div class="social-icons">
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="https://www.instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.facebook.com" target="_blank"><i class="fab fa-facebook"></i></a>
                     </div>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2023 Code For All. All rights reserved.</p>
+                <p>&copy; 2025 Code For All. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -470,16 +502,69 @@
     <script src="script.js"></script>
     <script>
         // Form submission handling
+        console.log('JavaScript loaded successfully');
         const joinForm = document.getElementById('join-form');
+        console.log('Form element found:', joinForm);
+        
+        // Add a test to verify the form is working
+        if (joinForm) {
+            console.log('Form found! Adding event listener...');
+        } else {
+            console.error('ERROR: Form with ID "join-form" not found!');
+        }
         
         if (joinForm) {
-            joinForm.addEventListener('submit', function(e) {
+            joinForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
+                console.log('Form submission started');
                 
-                // In a real implementation, you would send this data to a server
-                // For demo purposes, we'll just show an alert
-                alert('Thank you for your interest in joining our club! We will contact you soon.');
-                joinForm.reset();
+                // Collect form data
+                const formData = {
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    grade: document.getElementById('grade').value,
+                    interests: Array.from(document.querySelectorAll('input[name="interests[]"]:checked')).map(cb => cb.value),
+                    message: document.getElementById('message').value
+                };
+                console.log('Form data collected:', formData);
+                
+                // Show loading state
+                const submitBtn = joinForm.querySelector('.submit-btn');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Sending...';
+                submitBtn.disabled = true;
+                
+                try {
+                    console.log('Sending request to server...');
+                    // Send data to server
+                    const response = await fetch('/send-contact', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(formData)
+                    });
+                    
+                    console.log('Response received:', response.status, response.statusText);
+                    const result = await response.json();
+                    console.log('Response data:', result);
+                    
+                    if (response.ok && result.status === 'success') {
+                        console.log('Form submission successful');
+                        alert('Thank you for your interest in joining our club! We will contact you soon.');
+                        joinForm.reset();
+                    } else {
+                        console.log('Form submission failed:', result);
+                        alert('Sorry, there was an error sending your message. Please try again later.');
+                    }
+                } catch (error) {
+                    console.error('Error sending form:', error);
+                    alert('Sorry, there was an error sending your message. Please try again later.');
+                } finally {
+                    // Restore button state
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                }
             });
         }
         

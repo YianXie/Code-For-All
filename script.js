@@ -24,9 +24,21 @@ document.addEventListener('DOMContentLoaded', function() {
     // Authentication System
     class AuthSystem {
         constructor() {
-            this.users = JSON.parse(localStorage.getItem('codeforall_users')) || [];
+            this.users = [];
             this.currentUser = JSON.parse(localStorage.getItem('codeforall_currentuser')) || null;
+            this.loadUsers();
             this.initializeAuth();
+        }
+
+        async loadUsers() {
+            try {
+                const response = await fetch('users.json');
+                const data = await response.json();
+                this.users = data.users || [];
+            } catch (error) {
+                console.log('Could not load users from database, using localStorage fallback');
+                this.users = JSON.parse(localStorage.getItem('codeforall_users')) || [];
+            }
         }
 
         initializeAuth() {
@@ -44,49 +56,89 @@ document.addEventListener('DOMContentLoaded', function() {
 
         setupLoginForms() {
         const authForm = document.getElementById('authForm');
+        console.log('Setting up login forms, authForm found:', !!authForm);
 
         if (authForm) {
             authForm.addEventListener('submit', (e) => {
                 e.preventDefault();
+                console.log('Form submitted, isRegisterMode:', typeof isRegisterMode !== 'undefined' ? isRegisterMode : 'undefined');
                 
                 // Check if we're in register mode (using the global variable from login.html)
                 if (typeof isRegisterMode !== 'undefined' && isRegisterMode) {
+                    console.log('Calling handleRegister');
                     this.handleRegister(e);
                 } else {
+                    console.log('Calling handleLogin');
                     this.handleLogin(e);
                 }
             });
+            
+            // Show role assignment field if admin is logged in
+            this.updateRoleAssignmentVisibility();
+        }
+    }
+    
+    updateRoleAssignmentVisibility() {
+        const roleAssignmentGroup = document.getElementById('role-assignment-group');
+        const currentUser = this.getCurrentUser();
+        
+        if (roleAssignmentGroup) {
+            if (currentUser && currentUser.role === 'admin') {
+                roleAssignmentGroup.style.display = 'block';
+            } else {
+                roleAssignmentGroup.style.display = 'none';
+            }
         }
     }
 
-        handleLogin(e) {
+        async handleLogin(e) {
             e.preventDefault();
             
             const email = document.getElementById('authEmail').value;
             const password = document.getElementById('authPassword').value;
             
-            // Find user
-            const user = this.users.find(u => u.email === email && u.password === password);
+            console.log('Login attempt:', { email, password });
+            
+            // Reload users to get latest data
+            await this.loadUsers();
+            
+            console.log('Loaded users:', this.users);
+            console.log('Looking for user with email/username:', email, 'and password:', password);
+            
+            // Find user by email/username and password
+            const user = this.users.find(u => {
+                console.log('Checking user:', u.email, u.username, 'password match:', u.password === password);
+                return (u.email === email || u.username === email) && u.password === password;
+            });
+            
+            console.log('Found user:', user);
             
             if (user) {
                 this.currentUser = { ...user };
+                // Update last login
+                this.currentUser.last_login = new Date().toISOString();
                 localStorage.setItem('codeforall_currentuser', JSON.stringify(this.currentUser));
                 
-                this.showMessage('Login successful! Welcome back, ' + user.name, 'success');
+                const welcomeName = user.username || user.name || user.email;
+                this.showMessage('Login successful! Welcome back, ' + welcomeName, 'success');
                 
                 // Update navigation
                 this.updateNavigation();
                 
-                // Redirect to home page after short delay
+                // Redirect based on role
                 setTimeout(() => {
-                    window.location.href = 'index.html';
+                    if (user.role === 'admin') {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'index.html';
+                    }
                 }, 1500);
             } else {
                 // Call the login failure handler if it exists
                 if (typeof handleLoginFailure === 'function') {
                     handleLoginFailure();
                 } else {
-                    this.showMessage('Invalid email or password. Please try again.', 'error');
+                    this.showMessage('Invalid username/email or password. Please try again.', 'error');
                 }
             }
         }
@@ -116,19 +168,40 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
+            // Get role assignment (only if admin is creating the user)
+            const currentUser = this.getCurrentUser();
+            const userRoleSelect = document.getElementById('userRole');
+            let assignedRole = 'user'; // Default role for security
+            
+            // SECURITY: Only allow role assignment if current user is admin
+            // This prevents privilege escalation attacks
+            if (currentUser && currentUser.role === 'admin' && userRoleSelect && userRoleSelect.style.display !== 'none') {
+                assignedRole = userRoleSelect.value;
+            } else {
+                // Force user role for non-admin registrations
+                assignedRole = 'user';
+            }
+
             // Create new user
             const newUser = {
                 id: Date.now(),
+                username: name,
                 name,
                 email,
                 password,
-                joinDate: new Date().toISOString()
+                role: assignedRole,
+                created_at: new Date().toISOString(),
+                last_login: null
             };
 
             this.users.push(newUser);
             localStorage.setItem('codeforall_users', JSON.stringify(this.users));
             
-            this.showMessage('Account created successfully! You can now log in.', 'success');
+            // Save to users.json file
+            this.saveUserToDatabase(newUser);
+            
+            const roleMessage = assignedRole === 'admin' ? ' with administrator privileges' : '';
+            this.showMessage(`Account created successfully${roleMessage}! You can now log in.`, 'success');
             
             // Switch to login form
             setTimeout(() => {
@@ -156,6 +229,7 @@ document.addEventListener('DOMContentLoaded', function() {
         updateNavigation() {
             // Handle navigation structure (now consistent across all pages)
             const navMenu = document.querySelector('nav ul');
+            const adminLink = document.querySelector('.admin-link');
             
             if (navMenu) {
                 const loginLink = navMenu.querySelector('a[href="login.html"]');
@@ -165,10 +239,19 @@ document.addEventListener('DOMContentLoaded', function() {
                     const loginItem = loginLink.parentElement;
                     loginItem.innerHTML = `
                         <div class="user-menu">
-                            <span class="user-name">Hi, ${this.currentUser.name.split(' ')[0]}</span>
+                            <span class="user-name">Hi, ${this.currentUser.username}</span>
                             <button onclick="authSystem.logout()" class="logout-btn">Logout</button>
                         </div>
                     `;
+                    
+                    // Show admin link only for admin users
+                    if (adminLink) {
+                        if (this.currentUser.role === 'admin') {
+                            adminLink.style.display = 'block';
+                        } else {
+                            adminLink.style.display = 'none';
+                        }
+                    }
                 } else if (!this.currentUser && !loginLink) {
                     // Restore login link if user logged out
                     const lastItem = navMenu.querySelector('li:last-child');
@@ -177,14 +260,59 @@ document.addEventListener('DOMContentLoaded', function() {
                         const activeClass = isLoginPage ? ' class="active"' : '';
                         lastItem.innerHTML = `<a href="login.html"${activeClass}>Login</a>`;
                     }
+                    
+                    // Hide admin link for non-logged in users
+                    if (adminLink) {
+                        adminLink.style.display = 'none';
+                    }
                 }
             }
         }
 
         isProtectedRoute() {
             // Add routes that require authentication here
-            const protectedRoutes = [];
+            const protectedRoutes = ['admin.html'];
             return protectedRoutes.some(route => window.location.pathname.includes(route));
+        }
+
+        isAdminRoute() {
+            // Routes that require admin access
+            const adminRoutes = ['admin.html'];
+            return adminRoutes.some(route => window.location.pathname.includes(route));
+        }
+
+        hasAdminAccess() {
+            return this.currentUser && this.currentUser.role === 'admin';
+        }
+
+        getCurrentUser() {
+            return this.currentUser;
+        }
+
+        async saveUserToDatabase(newUser) {
+            try {
+                // Update the users.json file
+                const updatedData = {
+                    users: this.users,
+                    sessions: []
+                };
+                
+                // Since we can't directly write to files from frontend,
+                // we'll use a simple approach with a server endpoint
+                const response = await fetch('/save-user', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updatedData)
+                });
+                
+                if (!response.ok) {
+                    console.log('Could not save to database, using localStorage only');
+                }
+            } catch (error) {
+                console.log('Database save failed, using localStorage fallback:', error);
+            }
         }
 
         checkProtectedRoutes() {
@@ -192,6 +320,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.showMessage('Please log in to access this page.', 'error');
                 setTimeout(() => {
                     window.location.href = 'login.html';
+                }, 2000);
+            } else if (this.isAdminRoute() && !this.hasAdminAccess()) {
+                this.showMessage('Access denied. Admin privileges required.', 'error');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
                 }, 2000);
             }
         }
@@ -243,7 +376,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Initialize authentication system
+    console.log('Creating AuthSystem...');
     window.authSystem = new AuthSystem();
+    console.log('AuthSystem created:', window.authSystem);
 
     // Add CSS animations for messages
     if (!document.querySelector('#auth-animations')) {

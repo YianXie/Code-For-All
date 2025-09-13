@@ -21,6 +21,7 @@
                     <li><a href="events.html">Events</a></li>
                     <li><a href="team.html">Our Team</a></li>
                     <li><a href="contact.html">Get Involved</a></li>
+                    <li><a href="admin.html" class="admin-link" style="display: none;">Admin Panel</a></li>
                     <li><a href="login.html" class="active">Login</a></li>
                 </ul>
             </nav>
@@ -62,6 +63,16 @@
                         <div class="form-group" id="confirm-password-group" style="display: none;">
                             <label for="confirmPassword">Confirm Password</label>
                             <input type="password" id="confirmPassword" name="confirmPassword">
+                        </div>
+                        
+                        <!-- Role Assignment field (hidden by default) -->
+                        <div class="form-group role-assignment" id="role-assignment-group" style="display: none;">
+                            <label for="userRole">User Role</label>
+                            <select id="userRole" name="userRole">
+                                <option value="user">Regular User</option>
+                                <option value="admin">Administrator</option>
+                            </select>
+                            <small class="role-note">Only administrators can assign roles</small>
                         </div>
                         
                         <!-- Login options -->
@@ -145,6 +156,10 @@
             
             // Hide login fields
             document.getElementById('login-options').style.display = 'none';
+            
+            // SECURITY: Hide role assignment for public registration
+            // Role assignment should only be visible to admins
+            document.getElementById('role-assignment-group').style.display = 'none';
             
             // Update button text
             document.getElementById('auth-submit-btn').textContent = 'Create Account';
