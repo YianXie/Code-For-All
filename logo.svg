@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <!-- Background Circle -->
+  <circle cx="100" cy="100" r="90" fill="#3498db" />
+  
+  <!-- Code Brackets -->
+  <path d="M70 60 L40 100 L70 140" stroke="white" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M130 60 L160 100 L130 140" stroke="white" stroke-width="10" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+  
+  <!-- Equal Sign (representing "For All") -->
+  <line x1="85" y1="85" x2="115" y2="85" stroke="white" stroke-width="10" stroke-linecap="round" />
+  <line x1="85" y1="115" x2="115" y2="115" stroke="white" stroke-width="10" stroke-linecap="round" />
+</svg>
