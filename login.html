@@ -44,25 +44,38 @@
     <section class="login-section">
         <div class="container">
             <div class="auth-container">
-                <div class="auth-tabs">
-                    <button class="tab-btn active" onclick="showLogin()">Login</button>
-                    <button class="tab-btn" onclick="showRegister()">Register</button>
-                </div>
-
-                <!-- Login Form -->
-                <div id="login-form" class="auth-form active">
-                    <h2>Welcome Back!</h2>
-                    <p>Sign in to your account to continue</p>
-                    <form id="loginForm">
-                        <div class="form-group">
-                            <label for="loginEmail">Email</label>
-                            <input type="email" id="loginEmail" name="email" required>
+                <!-- Single Auth Form -->
+                <div id="auth-form" class="auth-form active">
+                    <h2 id="form-title">Welcome Back!</h2>
+                    <p id="form-subtitle">Sign in to your account to continue</p>
+                    
+                    <form id="authForm">
+                        <!-- Name field (hidden by default) -->
+                        <div class="form-group" id="name-group" style="display: none;">
+                            <label for="authName">Full Name</label>
+                            <input type="text" id="authName" name="name">
                         </div>
+                        
+                        <!-- Email field -->
                         <div class="form-group">
-                            <label for="loginPassword">Password</label>
-                            <input type="password" id="loginPassword" name="password" required>
+                            <label for="authEmail">Email</label>
+                            <input type="email" id="authEmail" name="email" required>
                         </div>
-                        <div class="form-options">
+                        
+                        <!-- Password field -->
+                        <div class="form-group">
+                            <label for="authPassword">Password</label>
+                            <input type="password" id="authPassword" name="password" required>
+                        </div>
+                        
+                        <!-- Confirm Password field (hidden by default) -->
+                        <div class="form-group" id="confirm-password-group" style="display: none;">
+                            <label for="confirmPassword">Confirm Password</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword">
+                        </div>
+                        
+                        <!-- Login options -->
+                        <div class="form-options" id="login-options">
                             <label class="checkbox-container">
                                 <input type="checkbox" id="rememberMe">
                                 <span class="checkmark"></span>
@@ -70,40 +83,23 @@
                             </label>
                             <a href="#" class="forgot-password">Forgot password?</a>
                         </div>
-                        <button type="submit" class="auth-btn">Sign In</button>
-                    </form>
-                </div>
-
-                <!-- Register Form -->
-                <div id="register-form" class="auth-form">
-                    <h2>Join Code For All!</h2>
-                    <p>Create an account to get started</p>
-                    <form id="registerForm">
-                        <div class="form-group">
-                            <label for="registerName">Full Name</label>
-                            <input type="text" id="registerName" name="name" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="registerEmail">Email</label>
-                            <input type="email" id="registerEmail" name="email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="registerPassword">Password</label>
-                            <input type="password" id="registerPassword" name="password" required minlength="6">
-                        </div>
-                        <div class="form-group">
-                            <label for="confirmPassword">Confirm Password</label>
-                            <input type="password" id="confirmPassword" name="confirmPassword" required>
-                        </div>
-                        <div class="form-options">
+                        
+                        <!-- Register options (hidden by default) -->
+                        <div class="form-options" id="register-options" style="display: none;">
                             <label class="checkbox-container">
-                                <input type="checkbox" id="agreeTerms" required>
+                                <input type="checkbox" id="agreeTerms">
                                 <span class="checkmark"></span>
                                 I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>
                             </label>
                         </div>
-                        <button type="submit" class="auth-btn">Create Account</button>
+                        
+                        <button type="submit" class="auth-btn" id="auth-submit-btn">Sign In</button>
                     </form>
+                    
+                    <!-- Switch mode link -->
+                    <div class="auth-switch" id="auth-switch">
+                        <p>Don't have an account? <a href="#" onclick="switchToRegister()">Create one here</a></p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -143,18 +139,82 @@
 
     <script src="script.js"></script>
     <script>
-        function showLogin() {
-            document.getElementById('login-form').classList.add('active');
-            document.getElementById('register-form').classList.remove('active');
-            document.querySelectorAll('.tab-btn')[0].classList.add('active');
-            document.querySelectorAll('.tab-btn')[1].classList.remove('active');
+        let isRegisterMode = false;
+
+        function switchToRegister() {
+            isRegisterMode = true;
+            
+            // Update form title and subtitle
+            document.getElementById('form-title').textContent = 'Join Code For All!';
+            document.getElementById('form-subtitle').textContent = 'Create an account to get started';
+            
+            // Show registration fields
+            document.getElementById('name-group').style.display = 'block';
+            document.getElementById('confirm-password-group').style.display = 'block';
+            document.getElementById('register-options').style.display = 'block';
+            
+            // Hide login fields
+            document.getElementById('login-options').style.display = 'none';
+            
+            // Update button text
+            document.getElementById('auth-submit-btn').textContent = 'Create Account';
+            
+            // Update switch link
+            document.getElementById('auth-switch').innerHTML = '<p>Already have an account? <a href="#" onclick="switchToLogin()">Sign in here</a></p>';
+            
+            // Make name and confirm password required
+            document.getElementById('authName').required = true;
+            document.getElementById('confirmPassword').required = true;
+            document.getElementById('agreeTerms').required = true;
+            
+            // Set minimum password length
+            document.getElementById('authPassword').minLength = 6;
         }
 
-        function showRegister() {
-            document.getElementById('register-form').classList.add('active');
-            document.getElementById('login-form').classList.remove('active');
-            document.querySelectorAll('.tab-btn')[1].classList.add('active');
-            document.querySelectorAll('.tab-btn')[0].classList.remove('active');
+        function switchToLogin() {
+            isRegisterMode = false;
+            
+            // Update form title and subtitle
+            document.getElementById('form-title').textContent = 'Welcome Back!';
+            document.getElementById('form-subtitle').textContent = 'Sign in to your account to continue';
+            
+            // Hide registration fields
+            document.getElementById('name-group').style.display = 'none';
+            document.getElementById('confirm-password-group').style.display = 'none';
+            document.getElementById('register-options').style.display = 'none';
+            
+            // Show login fields
+            document.getElementById('login-options').style.display = 'block';
+            
+            // Update button text
+            document.getElementById('auth-submit-btn').textContent = 'Sign In';
+            
+            // Update switch link
+            document.getElementById('auth-switch').innerHTML = '<p>Don\'t have an account? <a href="#" onclick="switchToRegister()">Create one here</a></p>';
+            
+            // Remove required from registration fields
+            document.getElementById('authName').required = false;
+            document.getElementById('confirmPassword').required = false;
+            document.getElementById('agreeTerms').required = false;
+            
+            // Remove minimum password length
+            document.getElementById('authPassword').removeAttribute('minLength');
+        }
+
+        function handleLoginFailure() {
+            // Show error message
+            const errorMsg = document.createElement('div');
+            errorMsg.className = 'auth-message error';
+            errorMsg.textContent = 'Login failed. Would you like to create a new account instead?';
+            
+            const form = document.getElementById('authForm');
+            form.insertBefore(errorMsg, form.firstChild);
+            
+            // Auto-switch to register after a delay
+            setTimeout(() => {
+                errorMsg.remove();
+                switchToRegister();
+            }, 3000);
         }
     </script>
 </body>

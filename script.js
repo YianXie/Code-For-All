@@ -1,9 +1,12 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Mobile menu toggle
+    // Mobile menu toggle - handle both navigation structures
     const menuToggle = document.querySelector('.menu-toggle');
+    const hamburger = document.querySelector('.hamburger');
     const nav = document.querySelector('nav');
+    const navMenu = document.querySelector('.nav-menu');
     
-    if (menuToggle) {
+    // Handle original navigation structure
+    if (menuToggle && nav) {
         menuToggle.addEventListener('click', function() {
             nav.classList.toggle('active');
             // Toggle icon between bars and times
@@ -15,6 +18,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 icon.classList.remove('fa-times');
                 icon.classList.add('fa-bars');
             }
+        });
+    }
+    
+    // Handle login page navigation structure
+    if (hamburger && navMenu) {
+        hamburger.addEventListener('click', function() {
+            navMenu.classList.toggle('active');
+            hamburger.classList.toggle('active');
         });
     }
 
@@ -40,50 +51,61 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         setupLoginForms() {
-            const loginForm = document.getElementById('loginForm');
-            const registerForm = document.getElementById('registerForm');
+        const authForm = document.getElementById('authForm');
 
-            if (loginForm) {
-                loginForm.addEventListener('submit', (e) => this.handleLogin(e));
-            }
-
-            if (registerForm) {
-                registerForm.addEventListener('submit', (e) => this.handleRegister(e));
-            }
+        if (authForm) {
+            authForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                // Check if we're in register mode (using the global variable from login.html)
+                if (typeof isRegisterMode !== 'undefined' && isRegisterMode) {
+                    this.handleRegister(e);
+                } else {
+                    this.handleLogin(e);
+                }
+            });
         }
+    }
 
         handleLogin(e) {
             e.preventDefault();
-            const formData = new FormData(e.target);
-            const email = formData.get('email');
-            const password = formData.get('password');
-            const rememberMe = document.getElementById('rememberMe').checked;
-
+            
+            const email = document.getElementById('authEmail').value;
+            const password = document.getElementById('authPassword').value;
+            
             // Find user
             const user = this.users.find(u => u.email === email && u.password === password);
             
             if (user) {
-                this.currentUser = { ...user, rememberMe };
+                this.currentUser = { ...user };
                 localStorage.setItem('codeforall_currentuser', JSON.stringify(this.currentUser));
                 
                 this.showMessage('Login successful! Welcome back, ' + user.name, 'success');
+                
+                // Update navigation
+                this.updateNavigation();
                 
                 // Redirect to home page after short delay
                 setTimeout(() => {
                     window.location.href = 'index.html';
                 }, 1500);
             } else {
-                this.showMessage('Invalid email or password. Please try again.', 'error');
+                // Call the login failure handler if it exists
+                if (typeof handleLoginFailure === 'function') {
+                    handleLoginFailure();
+                } else {
+                    this.showMessage('Invalid email or password. Please try again.', 'error');
+                }
             }
         }
 
         handleRegister(e) {
             e.preventDefault();
-            const formData = new FormData(e.target);
-            const name = formData.get('name');
-            const email = formData.get('email');
-            const password = formData.get('password');
-            const confirmPassword = formData.get('confirmPassword');
+            
+            const name = document.getElementById('authName').value;
+            const email = document.getElementById('authEmail').value;
+            const password = document.getElementById('authPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
 
             // Validation
             if (password !== confirmPassword) {
@@ -118,8 +140,10 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Switch to login form
             setTimeout(() => {
-                showLogin();
-                document.getElementById('loginEmail').value = email;
+                if (typeof switchToLogin === 'function') {
+                    switchToLogin();
+                }
+                document.getElementById('authEmail').value = email;
             }, 1500);
         }
 
@@ -138,30 +162,52 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         updateNavigation() {
+            // Handle both navigation structures
             const navMenu = document.querySelector('nav ul');
-            if (!navMenu) return;
-
-            // Remove existing auth links
-            const existingAuthLinks = navMenu.querySelectorAll('.auth-link');
-            existingAuthLinks.forEach(link => link.remove());
-
-            if (this.currentUser) {
-                // Add user menu
-                const userMenuItem = document.createElement('li');
-                userMenuItem.className = 'auth-link';
-                userMenuItem.innerHTML = `
-                    <div class="user-menu">
-                        <span class="user-name">Hi, ${this.currentUser.name.split(' ')[0]}</span>
-                        <button onclick="authSystem.logout()" class="logout-btn">Logout</button>
-                    </div>
-                `;
-                navMenu.appendChild(userMenuItem);
-            } else {
-                // Add login link
-                const loginMenuItem = document.createElement('li');
-                loginMenuItem.className = 'auth-link';
-                loginMenuItem.innerHTML = '<a href="login.html">Login</a>';
-                navMenu.appendChild(loginMenuItem);
+            const loginPageNavMenu = document.querySelector('.nav-menu');
+            
+            // Update main navigation (index.html, events.html, etc.)
+            if (navMenu) {
+                const loginLink = navMenu.querySelector('a[href="login.html"]');
+                
+                if (this.currentUser && loginLink) {
+                    // Replace login link with user menu
+                    const loginItem = loginLink.parentElement;
+                    loginItem.innerHTML = `
+                        <div class="user-menu">
+                            <span class="user-name">Hi, ${this.currentUser.name.split(' ')[0]}</span>
+                            <button onclick="authSystem.logout()" class="logout-btn">Logout</button>
+                        </div>
+                    `;
+                } else if (!this.currentUser && !loginLink) {
+                    // Restore login link if user logged out
+                    const lastItem = navMenu.querySelector('li:last-child');
+                    if (lastItem && lastItem.querySelector('.user-menu')) {
+                        lastItem.innerHTML = '<a href="login.html">Login</a>';
+                    }
+                }
+            }
+            
+            // Update login page navigation
+            if (loginPageNavMenu) {
+                const loginLink = loginPageNavMenu.querySelector('a[href="login.html"]');
+                
+                if (this.currentUser && loginLink) {
+                    // Replace login link with user menu
+                    const loginItem = loginLink.parentElement;
+                    loginItem.innerHTML = `
+                        <div class="user-menu">
+                            <span class="user-name">Hi, ${this.currentUser.name.split(' ')[0]}</span>
+                            <button onclick="authSystem.logout()" class="logout-btn">Logout</button>
+                        </div>
+                    `;
+                } else if (!this.currentUser && !loginLink) {
+                    // Restore login link if user logged out
+                    const lastItem = loginPageNavMenu.querySelector('li:last-child');
+                    if (lastItem && lastItem.querySelector('.user-menu')) {
+                        lastItem.innerHTML = '<a href="login.html" class="nav-link active">Login</a>';
+                    }
+                }
             }
         }
 
@@ -270,14 +316,30 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Close mobile menu when clicking outside
     document.addEventListener('click', function(event) {
-        const isClickInsideNav = nav.contains(event.target);
-        const isClickOnMenuToggle = menuToggle.contains(event.target);
+        // Handle original navigation structure
+        if (nav && menuToggle) {
+            const isClickInsideNav = nav.contains(event.target);
+            const isClickOnMenuToggle = menuToggle.contains(event.target);
+            
+            if (!isClickInsideNav && !isClickOnMenuToggle && nav.classList.contains('active')) {
+                nav.classList.remove('active');
+                const icon = menuToggle.querySelector('i');
+                if (icon) {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            }
+        }
         
-        if (!isClickInsideNav && !isClickOnMenuToggle && nav.classList.contains('active')) {
-            nav.classList.remove('active');
-            const icon = menuToggle.querySelector('i');
-            icon.classList.remove('fa-times');
-            icon.classList.add('fa-bars');
+        // Handle login page navigation structure
+        if (navMenu && hamburger) {
+            const isClickInsideNavMenu = navMenu.contains(event.target);
+            const isClickOnHamburger = hamburger.contains(event.target);
+            
+            if (!isClickInsideNavMenu && !isClickOnHamburger && navMenu.classList.contains('active')) {
+                navMenu.classList.remove('active');
+                hamburger.classList.remove('active');
+            }
         }
     });
     
@@ -297,11 +359,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 
                 // Close mobile menu if open
-                if (nav.classList.contains('active')) {
+                if (nav && nav.classList.contains('active')) {
                     nav.classList.remove('active');
-                    const icon = menuToggle.querySelector('i');
-                    icon.classList.remove('fa-times');
-                    icon.classList.add('fa-bars');
+                    if (menuToggle) {
+                        const icon = menuToggle.querySelector('i');
+                        if (icon) {
+                            icon.classList.remove('fa-times');
+                            icon.classList.add('fa-bars');
+                        }
+                    }
+                }
+                
+                // Close login page mobile menu if open
+                if (navMenu && navMenu.classList.contains('active')) {
+                    navMenu.classList.remove('active');
+                    if (hamburger) {
+                        hamburger.classList.remove('active');
+                    }
                 }
             }
         });
@@ -328,10 +402,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Add/remove header background on scroll
         const header = document.querySelector('header');
-        if (scrollPosition > 50) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
+        if (header) {
+            if (scrollPosition > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
         }
     });
     
