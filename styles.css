@@ -387,64 +387,7 @@ nav ul li a.active::after {
     font-size: 1.1rem;
 }
 
-/* Navigation for login page */
-.navbar {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-    position: fixed;
-    width: 100%;
-    top: 0;
-    z-index: 1000;
-    transition: all 0.3s ease;
-}
 
-.nav-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 30px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.nav-logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #2c3e50;
-}
-
-.nav-logo .logo {
-    width: 35px;
-    height: 35px;
-    border-radius: 8px;
-}
-
-.nav-menu {
-    display: flex;
-    gap: 30px;
-    align-items: center;
-}
-
-.nav-link {
-    color: #2c3e50;
-    font-weight: 500;
-    padding: 8px 16px;
-    border-radius: 25px;
-    transition: all 0.3s ease;
-    position: relative;
-}
-
-.nav-link:hover,
-.nav-link.active {
-    background: linear-gradient(135deg, #3498db, #2980b9);
-    color: white;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
-}
 
 /* Login/Auth Styles */
 .login-section {
@@ -730,60 +673,7 @@ nav ul li a.active::after {
     transform: translateY(-1px);
 }
 
-/* Hamburger menu styles for login page */
-.hamburger {
-    display: none;
-    flex-direction: column;
-    cursor: pointer;
-    padding: 5px;
-}
 
-.hamburger .bar {
-    width: 25px;
-    height: 3px;
-    background-color: #fff;
-    margin: 3px 0;
-    transition: 0.3s;
-}
-
-.hamburger.active .bar:nth-child(1) {
-    transform: rotate(-45deg) translate(-5px, 6px);
-}
-
-.hamburger.active .bar:nth-child(2) {
-    opacity: 0;
-}
-
-.hamburger.active .bar:nth-child(3) {
-    transform: rotate(45deg) translate(-5px, -6px);
-}
-
-@media (max-width: 768px) {
-    .hamburger {
-        display: flex;
-    }
-    
-    .nav-menu {
-        position: fixed;
-        left: -100%;
-        top: 70px;
-        flex-direction: column;
-        background-color: rgba(0, 0, 0, 0.95);
-        width: 100%;
-        text-align: center;
-        transition: 0.3s;
-        box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
-        z-index: 1000;
-    }
-    
-    .nav-menu.active {
-        left: 0;
-    }
-    
-    .nav-item {
-        margin: 1rem 0;
-    }
-}
 
 /* User menu styles */
 .user-menu {
@@ -882,23 +772,6 @@ nav ul li a.active::after {
 
 /* Responsive Design for Auth */
 @media (max-width: 768px) {
-    .navbar {
-        padding: 0;
-    }
-    
-    .nav-container {
-        padding: 12px 20px;
-    }
-    
-    .nav-logo {
-        font-size: 1.3rem;
-    }
-    
-    .nav-logo .logo {
-        width: 30px;
-        height: 30px;
-    }
-    
     .login-section {
         padding: 80px 0 40px;
     }

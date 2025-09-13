@@ -1,9 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Mobile menu toggle - handle both navigation structures
     const menuToggle = document.querySelector('.menu-toggle');
-    const hamburger = document.querySelector('.hamburger');
     const nav = document.querySelector('nav');
-    const navMenu = document.querySelector('.nav-menu');
     
     // Handle original navigation structure
     if (menuToggle && nav) {
@@ -21,13 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Handle login page navigation structure
-    if (hamburger && navMenu) {
-        hamburger.addEventListener('click', function() {
-            navMenu.classList.toggle('active');
-            hamburger.classList.toggle('active');
-        });
-    }
+
 
     // Authentication System
     class AuthSystem {
@@ -162,11 +154,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         updateNavigation() {
-            // Handle both navigation structures
+            // Handle navigation structure (now consistent across all pages)
             const navMenu = document.querySelector('nav ul');
-            const loginPageNavMenu = document.querySelector('.nav-menu');
             
-            // Update main navigation (index.html, events.html, etc.)
             if (navMenu) {
                 const loginLink = navMenu.querySelector('a[href="login.html"]');
                 
@@ -183,29 +173,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Restore login link if user logged out
                     const lastItem = navMenu.querySelector('li:last-child');
                     if (lastItem && lastItem.querySelector('.user-menu')) {
-                        lastItem.innerHTML = '<a href="login.html">Login</a>';
-                    }
-                }
-            }
-            
-            // Update login page navigation
-            if (loginPageNavMenu) {
-                const loginLink = loginPageNavMenu.querySelector('a[href="login.html"]');
-                
-                if (this.currentUser && loginLink) {
-                    // Replace login link with user menu
-                    const loginItem = loginLink.parentElement;
-                    loginItem.innerHTML = `
-                        <div class="user-menu">
-                            <span class="user-name">Hi, ${this.currentUser.name.split(' ')[0]}</span>
-                            <button onclick="authSystem.logout()" class="logout-btn">Logout</button>
-                        </div>
-                    `;
-                } else if (!this.currentUser && !loginLink) {
-                    // Restore login link if user logged out
-                    const lastItem = loginPageNavMenu.querySelector('li:last-child');
-                    if (lastItem && lastItem.querySelector('.user-menu')) {
-                        lastItem.innerHTML = '<a href="login.html" class="nav-link active">Login</a>';
+                        const isLoginPage = window.location.pathname.includes('login.html');
+                        const activeClass = isLoginPage ? ' class="active"' : '';
+                        lastItem.innerHTML = `<a href="login.html"${activeClass}>Login</a>`;
                     }
                 }
             }
@@ -316,7 +286,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Close mobile menu when clicking outside
     document.addEventListener('click', function(event) {
-        // Handle original navigation structure
+        // Handle navigation structure (now consistent across all pages)
         if (nav && menuToggle) {
             const isClickInsideNav = nav.contains(event.target);
             const isClickOnMenuToggle = menuToggle.contains(event.target);
@@ -328,17 +298,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     icon.classList.remove('fa-times');
                     icon.classList.add('fa-bars');
                 }
-            }
-        }
-        
-        // Handle login page navigation structure
-        if (navMenu && hamburger) {
-            const isClickInsideNavMenu = navMenu.contains(event.target);
-            const isClickOnHamburger = hamburger.contains(event.target);
-            
-            if (!isClickInsideNavMenu && !isClickOnHamburger && navMenu.classList.contains('active')) {
-                navMenu.classList.remove('active');
-                hamburger.classList.remove('active');
             }
         }
     });
