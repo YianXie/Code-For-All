@@ -134,6 +134,8 @@ p {
   position: relative;
   overflow: hidden;
   text-decoration: none;
+  --mouse-x: 50%;
+  --mouse-y: 50%;
 }
 
 .btn::before {
@@ -147,44 +149,127 @@ p {
   transition: left 0.5s;
 }
 
+.btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    circle at var(--mouse-x) var(--mouse-y),
+    rgba(255, 255, 255, 0.15) 0%,
+    transparent 50%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
 .btn:hover::before {
   left: 100%;
+}
+
+.btn:hover::after {
+  opacity: 1;
 }
 
 .btn-primary {
   background-color: var(--primary-navy);
   color: var(--pure-white);
   box-shadow: var(--shadow-subtle);
+  border: 2px solid transparent;
 }
 
 .btn-primary:hover {
   background-color: var(--secondary-navy);
   transform: translateY(-2px);
   box-shadow: var(--shadow-medium);
+  border-color: var(--light-blue);
 }
 
 .btn-outline {
   background-color: transparent;
   color: var(--primary-navy);
   border: 2px solid var(--primary-navy);
+  position: relative;
+}
+
+.btn-outline::after {
+  background: radial-gradient(
+    circle at var(--mouse-x) var(--mouse-y),
+    rgba(26, 35, 50, 0.1) 0%,
+    transparent 50%
+  );
 }
 
 .btn-outline:hover {
   background-color: var(--primary-navy);
   color: var(--pure-white);
   transform: translateY(-2px);
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 20px rgba(116, 185, 255, 0.3);
 }
 
 .btn-light {
   background-color: var(--pure-white);
   color: var(--primary-navy);
   box-shadow: var(--shadow-subtle);
+  border: 2px solid transparent;
+}
+
+.btn-light::after {
+  background: radial-gradient(
+    circle at var(--mouse-x) var(--mouse-y),
+    rgba(116, 185, 255, 0.1) 0%,
+    transparent 50%
+  );
 }
 
 .btn-light:hover {
   background-color: var(--off-white);
   transform: translateY(-2px);
   box-shadow: var(--shadow-medium);
+  border-color: var(--light-blue);
+}
+
+@keyframes mouseTrackGlow {
+    0%, 100% { 
+        box-shadow: 0 0 20px rgba(116, 185, 255, 0.3);
+    }
+    50% { 
+        box-shadow: 0 0 30px rgba(116, 185, 255, 0.5);
+    }
+}
+
+@keyframes ripple {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* Enhanced button interactions */
+.btn {
+    --glow-color: rgba(116, 185, 255, 0.4);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-primary {
+    --glow-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn:hover {
+    filter: brightness(1.05);
+}
+
+.btn:active {
+    transform: translateY(-1px) scale(0.98);
+    transition: all 0.1s ease;
 }
 
 /* Navigation Header */

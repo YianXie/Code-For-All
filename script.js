@@ -647,7 +647,58 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('section, .feature-card, .stat-box, .testimonial').forEach(el => {
         el.classList.add('scroll-reveal');
     });
+    
+    // Initialize mouse tracking for interactive button effects
+    initMouseTrackingButtons();
 });
+
+// Mouse tracking for interactive button effects
+function initMouseTrackingButtons() {
+    const buttons = document.querySelectorAll('.btn');
+    
+    buttons.forEach(button => {
+        button.addEventListener('mousemove', function(e) {
+            const rect = button.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            const y = ((e.clientY - rect.top) / rect.height) * 100;
+            
+            button.style.setProperty('--mouse-x', `${x}%`);
+            button.style.setProperty('--mouse-y', `${y}%`);
+        });
+        
+        button.addEventListener('mouseleave', function() {
+            button.style.setProperty('--mouse-x', '50%');
+            button.style.setProperty('--mouse-y', '50%');
+        });
+        
+        // Add ripple effect on click
+        button.addEventListener('click', function(e) {
+            const rect = button.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const ripple = document.createElement('span');
+            ripple.style.cssText = `
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.6);
+                transform: scale(0);
+                animation: ripple 0.6s linear;
+                left: ${x - 10}px;
+                top: ${y - 10}px;
+                width: 20px;
+                height: 20px;
+                pointer-events: none;
+            `;
+            
+            button.appendChild(ripple);
+            
+            setTimeout(() => {
+                ripple.remove();
+            }, 600);
+        });
+    });
+}
 
 // Prevent body scroll when mobile menu is open (additional fallback)
 const preventBodyScroll = document.createElement('style');
