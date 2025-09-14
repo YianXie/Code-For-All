@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code For All - Enhanced Portal</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="node_modules/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- AOS CSS -->
+    <link href="node_modules/aos/dist/aos.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="node_modules/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+    
+    <!-- Custom Styles -->
+    <link href="styles.css" rel="stylesheet">
+    
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            color: white;
+        }
+        
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 1rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .chart-container {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .gsap-demo {
+            width: 100px;
+            height: 100px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            margin: 2rem auto;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <h1 class="display-4 fw-bold mb-4">
+                        <i class="fas fa-code me-3"></i>
+                        Code For All
+                    </h1>
+                    <p class="lead mb-4">Enhanced with modern libraries and frameworks for a superior coding experience.</p>
+                    <div class="d-flex gap-3">
+                        <button class="btn btn-light btn-lg px-4" data-aos="fade-up" data-aos-delay="100">
+                            <i class="fas fa-rocket me-2"></i>
+                            Get Started
+                        </button>
+                        <button class="btn btn-outline-light btn-lg px-4" data-aos="fade-up" data-aos-delay="200">
+                            <i class="fas fa-play me-2"></i>
+                            Watch Demo
+                        </button>
+                    </div>
+                </div>
+                <div class="col-lg-6" data-aos="fade-left">
+                    <div class="gsap-demo" id="gsapDemo"></div>
+                    <p class="text-center mt-3">Click the circle for GSAP animation!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5" data-aos="fade-up">
+                <i class="fas fa-star me-2"></i>
+                Enhanced Features
+            </h2>
+            <div class="row">
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-card text-center">
+                        <i class="fab fa-bootstrap fa-3x mb-3 text-primary"></i>
+                        <h4>Bootstrap Integration</h4>
+                        <p>Responsive design with modern UI components</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-card text-center">
+                        <i class="fas fa-magic fa-3x mb-3 text-success"></i>
+                        <h4>GSAP Animations</h4>
+                        <p>Professional animations and interactive effects</p>
+                    </div>
+                </div>
+                <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-card text-center">
+                        <i class="fas fa-chart-bar fa-3x mb-3 text-warning"></i>
+                        <h4>Chart.js Visualization</h4>
+                        <p>Beautiful data visualization and analytics</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Chart Demo Section -->
+    <section class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5" data-aos="fade-up">
+                <i class="fas fa-chart-line me-2"></i>
+                Analytics Dashboard
+            </h2>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="chart-container" data-aos="fade-right">
+                        <h4 class="mb-3">Student Progress</h4>
+                        <canvas id="progressChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="chart-container" data-aos="fade-left">
+                        <h4 class="mb-3">Course Enrollment</h4>
+                        <canvas id="enrollmentChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container text-center">
+            <p class="mb-0">
+                <i class="fas fa-heart text-danger me-2"></i>
+                Enhanced with modern web technologies
+            </p>
+        </div>
+    </footer>
+    
+    <!-- Scripts -->
+    <!-- Bootstrap JS -->
+    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- AOS JS -->
+    <script src="node_modules/aos/dist/aos.js"></script>
+    
+    <!-- GSAP JS -->
+    <script src="node_modules/gsap/dist/gsap.min.js"></script>
+    
+    <!-- Chart.js -->
+    <script src="node_modules/chart.js/dist/chart.min.js"></script>
+    
+    <!-- Custom Scripts -->
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 1000,
+            once: true
+        });
+        
+        // GSAP Animation Demo
+        const gsapDemo = document.getElementById('gsapDemo');
+        gsapDemo.addEventListener('click', () => {
+            gsap.to(gsapDemo, {
+                rotation: 360,
+                scale: 1.5,
+                duration: 1,
+                ease: "bounce.out",
+                yoyo: true,
+                repeat: 1
+            });
+        });
+        
+        // Chart.js Demo
+        document.addEventListener('DOMContentLoaded', function() {
+            // Progress Chart
+            const progressCtx = document.getElementById('progressChart').getContext('2d');
+            new Chart(progressCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5'],
+                    datasets: [{
+                        label: 'Student Progress',
+                        data: [65, 75, 80, 85, 92],
+                        borderColor: 'rgb(75, 192, 192)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+            
+            // Enrollment Chart
+            const enrollmentCtx = document.getElementById('enrollmentChart').getContext('2d');
+            new Chart(enrollmentCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['JavaScript', 'Python', 'HTML/CSS', 'React'],
+                    datasets: [{
+                        data: [30, 25, 20, 25],
+                        backgroundColor: [
+                            '#FF6384',
+                            '#36A2EB',
+                            '#FFCE56',
+                            '#4BC0C0'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
