@@ -3,128 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Code For All</title>
+    <title>Code For All - Empowering Communities Through Technology</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <!-- Navigation Header -->
     <header>
         <div class="container">
             <div class="logo">
-                <img src="favicon.png" alt="Code For All Logo" class="logo-img">
+                <img src="logo.png" alt="Code For All Logo" class="logo-img">
                 <h1>Code For All</h1>
             </div>
             <nav>
                 <ul>
-                    <li><a href="index.html" class="active">Home</a></li>
+                    <li><a href="#home" class="active">Home</a></li>
                     <li><a href="events.html">Events</a></li>
-                    <li><a href="team.html">Our Team</a></li>
-                    <li><a href="contact.html">Get Involved</a></li>
-                    <li><a href="admin.html" class="admin-link" style="display: none;">Admin Panel</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="team.html">Team</a></li>
                     <li><a href="login.html">Login</a></li>
                 </ul>
             </nav>
             <div class="menu-toggle">
-                <i class="fas fa-bars"></i>
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
         </div>
     </header>
 
-    <section class="hero" style="background: linear-gradient(rgba(52, 152, 219, 0.8), rgba(41, 128, 185, 0.9)), url('coding_classroom.svg') no-repeat center center/cover; height: 600px; display: flex; align-items: center; justify-content: center; margin-top: 80px;">
+    <!-- Hero Section -->
+    <section class="hero" id="home">
         <div class="container">
-            <h1 style="color: white; font-size: 3.5rem; text-align: center;">Coding For Everyone</h1>
-            <p style="color: white; text-align: center; font-size: 1.2rem; max-width: 700px; margin: 20px auto;">Join our community of passionate individuals dedicated to making coding accessible for everyone through education and technology.</p>
-            <div style="display: flex; justify-content: center; margin-top: 30px;">
-                <a href="contact.html" style="background-color: white; color: #3498db; padding: 12px 30px; text-decoration: none; border-radius: 30px; font-weight: bold; margin: 0 10px; transition: all 0.3s ease;">Get Involved</a>
-                <a href="events.html" style="background-color: transparent; color: white; padding: 12px 30px; text-decoration: none; border-radius: 30px; font-weight: bold; border: 2px solid white; margin: 0 10px; transition: all 0.3s ease;">Our Events</a>
+            <h1>Empowering Communities Through Technology</h1>
+            <p>Join us in bridging the digital divide and creating opportunities for everyone to learn, grow, and succeed in the digital age.</p>
+            <div class="hero-buttons">
+                <a href="#about" class="btn btn-light">Discover Our Mission</a>
+                <a href="events.html" class="btn btn-outline">Join Our Events</a>
             </div>
         </div>
     </section>
 
-    <section class="about">
+    <!-- About Section -->
+    <section class="about" id="about">
         <div class="container">
             <h2 class="section-title">Our Mission</h2>
             <div class="about-content">
                 <div class="about-text">
-                    <p>Code For All is dedicated to fostering a spirit of coding, technology education, and digital literacy among students. We believe that young people have the power to create innovative solutions to real-world problems through programming and technology.</p>
-                    <p>Through coding workshops, hackathons, mentorship programs, and community tech projects, we aim to make programming accessible to everyone and build a more inclusive tech community.</p>
+                    <p class="text-large">At Code For All, we believe that technology should be accessible to everyone, regardless of their background or circumstances. Our mission is to empower communities by providing free coding education, digital literacy programs, and technology resources.</p>
+                    <p>We work with local organizations, schools, and community centers to bring technology education directly to underserved communities. Through hands-on workshops, mentorship programs, and collaborative projects, we're building a more inclusive digital future.</p>
+                    <a href="#impact" class="btn btn-primary">Discover Our Impact</a>
                 </div>
                 <div class="about-image">
-                    <img src="coding_workshop.jpg" alt="Coding Workshop">
+                    <img src="coding_classroom.jpg" alt="Students learning to code">
                 </div>
             </div>
         </div>
     </section>
 
-    <section class="impact">
+    <!-- Impact Stats -->
+    <section class="impact" id="impact">
         <div class="container">
             <h2 class="section-title">Our Impact</h2>
             <div class="impact-stats">
-                <div class="stat-box">
-                    <i class="fas fa-hand-holding-heart"></i>
-                    <h3>$10,000+</h3>
-                    <p>Raised for Local Causes</p>
-                </div>
-                <div class="stat-box">
+                <div class="stat-box scroll-reveal">
                     <i class="fas fa-users"></i>
                     <h3>500+</h3>
-                    <p>Volunteer Hours</p>
+                    <p>Students Empowered</p>
                 </div>
-                <div class="stat-box">
-                    <i class="fas fa-project-diagram"></i>
-                    <h3>15+</h3>
-                    <p>Community Events</p>
+                <div class="stat-box scroll-reveal">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h3>50+</h3>
+                    <p>Workshops Delivered</p>
                 </div>
-                <div class="stat-box">
-                    <i class="fas fa-hands-helping"></i>
-                    <h3>100+</h3>
-                    <p>Active Members</p>
+                <div class="stat-box scroll-reveal">
+                    <i class="fas fa-laptop-code"></i>
+                    <h3>25+</h3>
+                    <p>Community Partners</p>
+                </div>
+                <div class="stat-box scroll-reveal">
+                    <i class="fas fa-heart"></i>
+                    <h3>1000+</h3>
+                    <p>Lives Transformed</p>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Featured Initiative -->
     <section class="featured-cause">
         <div class="container">
             <h2 class="section-title">Current Initiative</h2>
             <div class="cause-content">
                 <div class="cause-image">
-                    <img src="coding_hackathon.jpg" alt="Coding Hackathon">
+                    <img src="food_bank.jpg" alt="Local Food Bank Support">
                 </div>
                 <div class="cause-text">
-                    <h3>Local Food Bank Support</h3>
-                    <p>This semester, we're focusing on supporting our local food bank to address food insecurity in our community. Our goal is to collect 1,000 non-perishable food items and raise $2,000 to help families in need.</p>
+                    <h3>Digital Food Bank Revolution</h3>
+                    <p class="text-large">We're developing a comprehensive digital inventory management system for our local food bank to help them better track donations, manage volunteers, and serve more families in need.</p>
+                    <div class="progress-text">Implementation Progress: 75% Complete</div>
                     <div class="progress-bar">
-                        <div class="progress" style="width: 65%;"></div>
+                        <div class="progress" style="width: 75%;"></div>
                     </div>
-                    <p class="progress-text">65% of goal reached</p>
-                    <a href="events.html" class="btn">Learn How to Help</a>
+                    <p>This innovative solution will streamline operations and increase the food bank's capacity to serve our community by 40%.</p>
+                    <a href="events.html" class="btn btn-primary">Join This Initiative</a>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Testimonials -->
     <section class="testimonials">
         <div class="container">
-            <h2 class="section-title">What Our Members Say</h2>
-            <div class="testimonial-slider">
-                <div class="testimonial">
-                    <p>"Being part of the Philanthropy Club has been the most rewarding experience of my high school career. I've learned so much about community needs and how I can make a difference."</p>
-                    <div class="testimonial-author">
-                        <img src="coding_project.jpg" alt="Student" style="width: 60px; height: 60px; object-fit: cover; border-radius: 50%;">
-                        <h4>Jamie Smith</h4>
-                        <p>Club President</p>
+            <h2 class="section-title">Voices of Transformation</h2>
+            <div class="testimonial scroll-reveal">
+                <p>"Code For All transformed my perspective on technology and opened doors I never knew existed. From having zero coding experience to landing my dream job as a web developer, this community provided not just education, but genuine mentorship and unwavering support."</p>
+                <div class="testimonial-author">
+                    <img src="testimonial1.jpg" alt="Sarah Johnson">
+                    <div>
+                        <h4>Sarah Johnson</h4>
+                        <p>Senior Web Developer, TechCorp</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Call to Action -->
     <section class="cta">
         <div class="container">
-            <h2>Ready to Make a Difference?</h2>
-            <p>Join our club today and be part of something meaningful.</p>
-            <a href="contact.html" class="btn">Get Involved</a>
+            <h2>Ready to Transform Lives Through Technology?</h2>
+            <p>Join our exclusive community of innovators, mentors, and changemakers. Together, we can bridge the digital divide and create unprecedented opportunities for everyone.</p>
+            <a href="events.html" class="btn btn-light">Begin Your Journey</a>
         </div>
     </section>
 

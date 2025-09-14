@@ -1,21 +1,42 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Mobile menu toggle - handle both navigation structures
+    // Mobile Navigation Toggle
     const menuToggle = document.querySelector('.menu-toggle');
     const nav = document.querySelector('nav');
-    
-    // Handle original navigation structure
+    const navLinks = document.querySelectorAll('nav a');
+
+    // Toggle mobile menu
     if (menuToggle && nav) {
-        menuToggle.addEventListener('click', function() {
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
             nav.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
+            
             // Toggle icon between bars and times
             const icon = menuToggle.querySelector('i');
-            if (icon.classList.contains('fa-bars')) {
-                icon.classList.remove('fa-bars');
-                icon.classList.add('fa-times');
-            } else {
-                icon.classList.remove('fa-times');
-                icon.classList.add('fa-bars');
+            if (icon) {
+                if (icon.classList.contains('fa-bars')) {
+                    icon.classList.remove('fa-bars');
+                    icon.classList.add('fa-times');
+                } else {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
             }
+        });
+
+        // Close menu when clicking on a link
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                menuToggle.classList.remove('active');
+                nav.classList.remove('active');
+                document.body.classList.remove('menu-open');
+                
+                const icon = menuToggle.querySelector('i');
+                if (icon) {
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
         });
     }
     
@@ -380,7 +401,59 @@ document.addEventListener('DOMContentLoaded', function() {
     window.authSystem = new AuthSystem();
     console.log('AuthSystem created:', window.authSystem);
 
-    // Add CSS animations for messages
+    // Header scroll effect
+    const header = document.querySelector('header');
+    let lastScrollY = window.scrollY;
+
+    window.addEventListener('scroll', () => {
+        const currentScrollY = window.scrollY;
+        
+        if (currentScrollY > 100) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
+        
+        lastScrollY = currentScrollY;
+    });
+
+    // Counter animation for stats
+    const animateCounters = () => {
+        const counters = document.querySelectorAll('.stat-box h3');
+        
+        counters.forEach(counter => {
+            const target = parseInt(counter.textContent.replace(/[^0-9]/g, ''));
+            const suffix = counter.textContent.replace(/[0-9]/g, '');
+            let current = 0;
+            const increment = target / 100;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    counter.textContent = target + suffix;
+                    clearInterval(timer);
+                } else {
+                    counter.textContent = Math.floor(current) + suffix;
+                }
+            }, 20);
+        });
+    };
+
+    // Trigger counter animation when stats section is visible
+    const statsSection = document.querySelector('.impact');
+    if (statsSection) {
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounters();
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        statsObserver.observe(statsSection);
+    }
+
+    // Add CSS animations for messages and mobile menu
     if (!document.querySelector('#auth-animations')) {
         const style = document.createElement('style');
         style.id = 'auth-animations';
@@ -415,9 +488,37 @@ document.addEventListener('DOMContentLoaded', function() {
             .logout-btn:hover {
                 background: #c0392b;
             }
+            body.menu-open {
+                overflow: hidden;
+            }
+            .scroll-reveal {
+                opacity: 0;
+                transform: translateY(30px);
+                transition: opacity 0.6s ease, transform 0.6s ease;
+            }
         `;
         document.head.appendChild(style);
     }
+
+    // Scroll reveal animation
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    // Observe elements with scroll-reveal class
+    document.querySelectorAll('.scroll-reveal').forEach(el => {
+        observer.observe(el);
+    });
     
     // Close mobile menu when clicking outside
     document.addEventListener('click', function(event) {
@@ -428,6 +529,8 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (!isClickInsideNav && !isClickOnMenuToggle && nav.classList.contains('active')) {
                 nav.classList.remove('active');
+                menuToggle.classList.remove('active');
+                document.body.classList.remove('menu-open');
                 const icon = menuToggle.querySelector('i');
                 if (icon) {
                     icon.classList.remove('fa-times');
@@ -447,8 +550,12 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const targetElement = document.querySelector(targetId);
             if (targetElement) {
+                const header = document.querySelector('header');
+                const headerHeight = header ? header.offsetHeight : 0;
+                const targetPosition = targetElement.offsetTop - headerHeight - 20;
+                
                 window.scrollTo({
-                    top: targetElement.offsetTop - 80, // Adjust for header height
+                    top: targetPosition,
                     behavior: 'smooth'
                 });
                 
@@ -456,6 +563,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (nav && nav.classList.contains('active')) {
                     nav.classList.remove('active');
                     if (menuToggle) {
+                        menuToggle.classList.remove('active');
                         const icon = menuToggle.querySelector('i');
                         if (icon) {
                             icon.classList.remove('fa-times');
@@ -493,16 +601,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
         });
-        
-        // Add/remove header background on scroll
-        const header = document.querySelector('header');
-        if (header) {
-            if (scrollPosition > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-        }
     });
     
     // Simple testimonial slider (if multiple testimonials exist)
@@ -544,4 +642,20 @@ document.addEventListener('DOMContentLoaded', function() {
         // Initialize: hide all except first
         showTestimonial(0);
     }
+    
+    // Initialize scroll reveal for existing elements
+    document.querySelectorAll('section, .feature-card, .stat-box, .testimonial').forEach(el => {
+        el.classList.add('scroll-reveal');
+    });
 });
+
+// Prevent body scroll when mobile menu is open (additional fallback)
+const preventBodyScroll = document.createElement('style');
+preventBodyScroll.textContent = `
+    body.menu-open {
+        overflow: hidden !important;
+        position: fixed;
+        width: 100%;
+    }
+`;
+document.head.appendChild(preventBodyScroll);
