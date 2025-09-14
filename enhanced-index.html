@@ -55,6 +55,122 @@
             margin: 2rem auto;
             cursor: pointer;
         }
+        
+        /* Enhanced Mouse-Reactive Buttons */
+        .btn-reactive {
+            position: relative;
+            overflow: hidden;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            --mouse-x: 50%;
+            --mouse-y: 50%;
+        }
+        
+        .btn-reactive::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(
+                circle 250px at var(--mouse-x) var(--mouse-y),
+                rgba(255, 255, 255, 0.4) 0%,
+                rgba(255, 255, 255, 0.15) 40%,
+                rgba(255, 255, 255, 0.05) 70%,
+                transparent 90%
+            );
+            opacity: 0.3;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        
+        .btn-reactive:hover::before {
+            opacity: 1;
+        }
+        
+        .btn-reactive::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .btn-reactive:hover::after {
+            left: 100%;
+        }
+        
+        .btn-reactive:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(255, 107, 107, 0.5);
+        }
+        
+        .btn-reactive:active {
+            transform: translateY(-1px) scale(0.98);
+            transition: all 0.1s ease;
+        }
+        
+        .btn-reactive-outline {
+            background: transparent;
+            border: 2px solid #ff6b6b;
+            color: #ff6b6b;
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3), inset 0 0 20px rgba(255, 107, 107, 0.1);
+            --mouse-x: 50%;
+            --mouse-y: 50%;
+        }
+        
+        .btn-reactive-outline::before {
+            background: radial-gradient(
+                circle 250px at var(--mouse-x) var(--mouse-y),
+                rgba(255, 107, 107, 0.3) 0%,
+                rgba(255, 107, 107, 0.15) 40%,
+                rgba(255, 107, 107, 0.05) 70%,
+                transparent 90%
+            );
+            opacity: 0.4;
+            transition: opacity 0.3s ease;
+        }
+        
+        .btn-reactive-outline:hover::before {
+            opacity: 1;
+        }
+        
+        .btn-reactive-outline:hover {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            border-color: transparent;
+        }
+        
+        /* Ripple Effect */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
+            pointer-events: none;
+        }
+        
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -69,11 +185,11 @@
                     </h1>
                     <p class="lead mb-4">Enhanced with modern libraries and frameworks for a superior coding experience.</p>
                     <div class="d-flex gap-3">
-                        <button class="btn btn-light btn-lg px-4" data-aos="fade-up" data-aos-delay="100">
+                        <button class="btn-reactive" data-aos="fade-up" data-aos-delay="100">
                             <i class="fas fa-rocket me-2"></i>
                             Get Started
                         </button>
-                        <button class="btn btn-outline-light btn-lg px-4" data-aos="fade-up" data-aos-delay="200">
+                        <button class="btn-reactive btn-reactive-outline" data-aos="fade-up" data-aos-delay="200">
                             <i class="fas fa-play me-2"></i>
                             Watch Demo
                         </button>
@@ -188,12 +304,72 @@
             });
         });
         
-        // Chart.js Demo
-        document.addEventListener('DOMContentLoaded', function() {
+        // Enhanced Mouse-Reactive Button Functionality
+        function initReactiveButtons() {
+            const reactiveButtons = document.querySelectorAll('.btn-reactive');
+            
+            reactiveButtons.forEach(button => {
+                // Mouse move tracking for highlight effect
+                button.addEventListener('mousemove', function(e) {
+                    const rect = button.getBoundingClientRect();
+                    const x = ((e.clientX - rect.left) / rect.width) * 100;
+                    const y = ((e.clientY - rect.top) / rect.height) * 100;
+                    
+                    button.style.setProperty('--mouse-x', `${x}%`);
+                    button.style.setProperty('--mouse-y', `${y}%`);
+                });
+                
+                // Reset position when mouse leaves
+                button.addEventListener('mouseleave', function() {
+                    button.style.setProperty('--mouse-x', '50%');
+                    button.style.setProperty('--mouse-y', '50%');
+                });
+                
+                // Ripple effect on click
+                button.addEventListener('click', function(e) {
+                    const rect = button.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const ripple = document.createElement('span');
+                    ripple.className = 'ripple';
+                    ripple.style.left = `${x - 10}px`;
+                    ripple.style.top = `${y - 10}px`;
+                    ripple.style.width = '20px';
+                    ripple.style.height = '20px';
+                    
+                    button.appendChild(ripple);
+                    
+                    setTimeout(() => {
+                        ripple.remove();
+                    }, 600);
+                });
+                
+                // Enhanced hover glow effect
+                button.addEventListener('mouseenter', function() {
+                    gsap.to(button, {
+                        boxShadow: '0 20px 50px rgba(255, 107, 107, 0.7)',
+                        duration: 0.3,
+                        ease: 'power2.out'
+                    });
+                });
+                
+                button.addEventListener('mouseleave', function() {
+                    gsap.to(button, {
+                        boxShadow: '0 8px 25px rgba(255, 107, 107, 0.4)',
+                        duration: 0.3,
+                        ease: 'power2.out'
+                    });
+                });
+            });
+        }
+        
+        // Chart initialization function
+        function initCharts() {
             // Wait for Chart.js to load
             if (typeof Chart === 'undefined') {
                 console.log('Chart.js not loaded yet, retrying...');
-                setTimeout(arguments.callee, 100);
+                setTimeout(initCharts, 100);
                 return;
             }
             
@@ -246,6 +422,12 @@
                     }
                 }
             });
+        }
+        
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initCharts();
+            initReactiveButtons();
         });
     </script>
 </body>

@@ -1,8 +1,42 @@
+// Function to set active navigation based on current page
+function setActiveNavigation() {
+    const currentPath = window.location.pathname;
+    const currentPage = currentPath.split('/').pop() || 'index.html';
+    
+    // Remove active class from all nav links
+    document.querySelectorAll('nav ul li a').forEach(link => {
+        link.classList.remove('active');
+    });
+    
+    // Set active class based on current page
+    if (currentPage === 'index.html' || currentPage === '' || currentPath === '/') {
+        const homeLink = document.querySelector('nav ul li a[href="#home"]');
+        if (homeLink) homeLink.classList.add('active');
+    } else if (currentPage === 'events.html') {
+        const eventsLink = document.querySelector('nav ul li a[href="events.html"]');
+        if (eventsLink) eventsLink.classList.add('active');
+    } else if (currentPage === 'contact.html') {
+        const contactLink = document.querySelector('nav ul li a[href="contact.html"]');
+        if (contactLink) contactLink.classList.add('active');
+    } else if (currentPage === 'team.html') {
+        const teamLink = document.querySelector('nav ul li a[href="team.html"]');
+        if (teamLink) teamLink.classList.add('active');
+    } else if (currentPage === 'login.html') {
+        const loginLink = document.querySelector('nav ul li a[href="login.html"]');
+        if (loginLink) loginLink.classList.add('active');
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
+    // Set active navigation based on current page
+    setActiveNavigation();
+    
     // Mobile Navigation Toggle
     const menuToggle = document.querySelector('.menu-toggle');
     const nav = document.querySelector('nav');
     const navLinks = document.querySelectorAll('nav a');
+    const navMenu = document.querySelector('nav ul');
+    const hamburger = document.querySelector('.hamburger');
 
     // Toggle mobile menu
     if (menuToggle && nav) {
@@ -249,7 +283,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         updateNavigation() {
             // Handle navigation structure (now consistent across all pages)
-            const navMenu = document.querySelector('nav ul');
             const adminLink = document.querySelector('.admin-link');
             
             if (navMenu) {
@@ -583,24 +616,30 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Add active class to nav items based on scroll position
+    // Add active class to nav items based on scroll position (only for same-page navigation)
     window.addEventListener('scroll', function() {
-        const scrollPosition = window.scrollY;
-        
-        document.querySelectorAll('section').forEach(section => {
-            const sectionTop = section.offsetTop - 100;
-            const sectionHeight = section.offsetHeight;
-            const sectionId = section.getAttribute('id');
+        // Only apply scroll-based highlighting on the home page
+        if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/' || window.location.pathname.endsWith('/')) {
+            const scrollPosition = window.scrollY;
             
-            if (sectionId && scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-                document.querySelectorAll('nav ul li a').forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href') === '#' + sectionId) {
-                        link.classList.add('active');
-                    }
-                });
-            }
-        });
+            document.querySelectorAll('section').forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+                
+                if (sectionId && scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    document.querySelectorAll('nav ul li a').forEach(link => {
+                        // Only remove active from same-page links (starting with #)
+                        if (link.getAttribute('href').startsWith('#')) {
+                            link.classList.remove('active');
+                        }
+                        if (link.getAttribute('href') === '#' + sectionId) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }
     });
     
     // Simple testimonial slider (if multiple testimonials exist)
@@ -643,20 +682,22 @@ document.addEventListener('DOMContentLoaded', function() {
         showTestimonial(0);
     }
     
-    // Initialize scroll reveal for existing elements
-    document.querySelectorAll('section, .feature-card, .stat-box, .testimonial').forEach(el => {
+    // Initialize scroll reveal for specific elements only (not main sections)
+    document.querySelectorAll('.feature-card, .stat-box, .testimonial').forEach(el => {
         el.classList.add('scroll-reveal');
     });
     
-    // Initialize mouse tracking for interactive button effects
-    initMouseTrackingButtons();
+    // Initialize enhanced reactive button effects
+    initReactiveButtons();
 });
 
-// Mouse tracking for interactive button effects
-function initMouseTrackingButtons() {
+// Enhanced Mouse-Reactive Button Functionality with GSAP
+function initReactiveButtons() {
     const buttons = document.querySelectorAll('.btn');
+    const navLinks = document.querySelectorAll('nav a');
     
     buttons.forEach(button => {
+        // Mouse move tracking for highlight effect
         button.addEventListener('mousemove', function(e) {
             const rect = button.getBoundingClientRect();
             const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -666,36 +707,92 @@ function initMouseTrackingButtons() {
             button.style.setProperty('--mouse-y', `${y}%`);
         });
         
+        // Reset position when mouse leaves
         button.addEventListener('mouseleave', function() {
             button.style.setProperty('--mouse-x', '50%');
             button.style.setProperty('--mouse-y', '50%');
         });
         
-        // Add ripple effect on click
+        // Ripple effect on click
         button.addEventListener('click', function(e) {
+            // Remove any existing ripples first
+            const existingRipples = button.querySelectorAll('.ripple');
+            existingRipples.forEach(ripple => ripple.remove());
+            
             const rect = button.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
             
             const ripple = document.createElement('span');
-            ripple.style.cssText = `
-                position: absolute;
-                border-radius: 50%;
-                background: rgba(255, 255, 255, 0.6);
-                transform: scale(0);
-                animation: ripple 0.6s linear;
-                left: ${x - 10}px;
-                top: ${y - 10}px;
-                width: 20px;
-                height: 20px;
-                pointer-events: none;
-            `;
+            ripple.className = 'ripple';
+            ripple.style.left = `${x - 10}px`;
+            ripple.style.top = `${y - 10}px`;
+            ripple.style.width = '20px';
+            ripple.style.height = '20px';
             
             button.appendChild(ripple);
             
             setTimeout(() => {
-                ripple.remove();
+                if (ripple.parentNode) {
+                    ripple.remove();
+                }
             }, 600);
+        });
+        
+        // Enhanced hover glow effect with GSAP
+        button.addEventListener('mouseenter', function() {
+            // Determine glow color based on button type
+            let glowColor = 'rgba(26, 35, 50, 0.7)';
+            if (button.classList.contains('btn-light')) {
+                glowColor = 'rgba(116, 185, 255, 0.7)';
+            } else if (button.classList.contains('btn-outline')) {
+                glowColor = 'rgba(26, 35, 50, 0.7)';
+            }
+            
+            if (typeof gsap !== 'undefined') {
+                gsap.to(button, {
+                    boxShadow: `0 20px 50px ${glowColor}`,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            }
+        });
+        
+        button.addEventListener('mouseleave', function() {
+            // Reset glow based on button type
+            let resetGlow = '0 8px 25px rgba(26, 35, 50, 0.4)';
+            if (button.classList.contains('btn-light')) {
+                resetGlow = '0 8px 25px rgba(255, 255, 255, 0.4)';
+            } else if (button.classList.contains('btn-outline')) {
+                resetGlow = '0 8px 25px rgba(26, 35, 50, 0.3)';
+            }
+            
+            if (typeof gsap !== 'undefined') {
+                gsap.to(button, {
+                    boxShadow: resetGlow,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            }
+        });
+    });
+    
+    // Add mouse tracking for navigation links
+    navLinks.forEach(navLink => {
+        // Mouse move tracking for navigation highlight effect
+        navLink.addEventListener('mousemove', function(e) {
+            const rect = navLink.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            const y = ((e.clientY - rect.top) / rect.height) * 100;
+            
+            navLink.style.setProperty('--mouse-x', `${x}%`);
+            navLink.style.setProperty('--mouse-y', `${y}%`);
+        });
+        
+        // Reset position when mouse leaves
+        navLink.addEventListener('mouseleave', function() {
+            navLink.style.setProperty('--mouse-x', '50%');
+            navLink.style.setProperty('--mouse-y', '50%');
         });
     });
 }
@@ -705,8 +802,9 @@ const preventBodyScroll = document.createElement('style');
 preventBodyScroll.textContent = `
     body.menu-open {
         overflow: hidden !important;
-        position: fixed;
-        width: 100%;
     }
 `;
 document.head.appendChild(preventBodyScroll);
+
+// Ensure body doesn't have menu-open class on page load
+document.body.classList.remove('menu-open');
