@@ -950,36 +950,21 @@
              const adminLoginBtn = document.getElementById('admin-login-btn');
              
              if (isAdmin && currentUser) {
+                 // Show admin panel only for admin users
                  adminPanel.style.display = 'block';
                  adminUserDisplay.textContent = `(${currentUser.username || currentUser.name || 'Admin'})`;
-                 if (adminLoginBtn) adminLoginBtn.style.display = 'none';
+                 if (adminLoginBtn) adminLoginBtn.remove(); // Remove login button if it exists
              } else {
+                 // Hide admin panel completely for non-admin users
                  adminPanel.style.display = 'none';
                  adminUserDisplay.textContent = '';
-                 addAdminLoginButton();
+                 // Remove any existing admin login button
+                 if (adminLoginBtn) adminLoginBtn.remove();
              }
          }
          
-         // Add admin login button to admin panel
-         function addAdminLoginButton() {
-             const adminPanel = document.querySelector('.admin-panel');
-             let loginBtn = document.getElementById('admin-login-btn');
-             
-             if (!isAdmin && !loginBtn) {
-                 loginBtn = document.createElement('button');
-                 loginBtn.id = 'admin-login-btn';
-                 loginBtn.className = 'btn btn-primary';
-                 loginBtn.textContent = 'Admin Login';
-                 loginBtn.onclick = function() {
-                     // Redirect to login page instead of opening modal
-                     window.location.href = 'login.html';
-                 };
-                 adminPanel.appendChild(loginBtn);
-                 adminPanel.style.display = 'block';
-             } else if (loginBtn) {
-                 loginBtn.style.display = isAdmin ? 'none' : 'block';
-             }
-         }
+         // Remove the addAdminLoginButton function as we no longer need it
+         // Admin panel should only be visible to actual admin users
         
         // Modal functionality
          
@@ -1058,9 +1043,6 @@
             // Initialize session and calendar
             initializeSession();
             generateCalendar(currentDate.getFullYear(), currentDate.getMonth());
-            
-            // Add admin functionality
-            addAdminLoginButton();
             
             // Navigation buttons
             document.getElementById('prev-month').addEventListener('click', function() {

@@ -140,9 +140,22 @@ class AuthSystem {
 
     async login(username, password) {
         try {
-            const response = await fetch('users.json');
-            const data = await response.json();
-            const users = data.users || [];
+            // First try to get users from JSON file
+            let users = [];
+            try {
+                const response = await fetch('users.json');
+                const data = await response.json();
+                users = data.users || [];
+            } catch (fetchError) {
+                console.log('Could not fetch users.json, using localStorage only');
+            }
+            
+            // Also get users from localStorage (for demo registrations)
+            const localUsers = localStorage.getItem('registeredUsers');
+            if (localUsers) {
+                const parsedLocalUsers = JSON.parse(localUsers);
+                users = [...users, ...parsedLocalUsers];
+            }
             
             const user = users.find(u => 
                 (u.username === username || u.email === username) && u.password === password
@@ -166,6 +179,104 @@ class AuthSystem {
         } catch (error) {
             console.error('Error during login:', error);
             return false;
+        }
+    }
+
+    async register(userData) {
+        try {
+            // First, check if user already exists
+            const response = await fetch('users.json');
+            const data = await response.json();
+            const users = data.users || [];
+            
+            // Check for existing username or email
+            const existingUser = users.find(u => 
+                u.username.toLowerCase() === userData.username.toLowerCase() || 
+                u.email.toLowerCase() === userData.email.toLowerCase()
+            );
+            
+            if (existingUser) {
+                this.showMessage('Username or email already exists', 'error');
+                return false;
+            }
+            
+            // Create new user object
+            const newUser = {
+                id: Date.now(), // Simple ID generation
+                username: userData.username,
+                name: userData.name,
+                email: userData.email,
+                password: userData.password,
+                role: 'user', // Default role
+                created_at: new Date().toISOString(),
+                last_login: null
+            };
+            
+            // Add new user to the array
+            users.push(newUser);
+            
+            // Save to backend
+            const saveResponse = await fetch('/save-user', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newUser)
+            });
+            
+            if (saveResponse.ok) {
+                this.showMessage('Registration successful! Please login.', 'success');
+                return true;
+            } else {
+                // Fallback: save to localStorage for demo purposes
+                const existingData = localStorage.getItem('registeredUsers');
+                const registeredUsers = existingData ? JSON.parse(existingData) : [];
+                registeredUsers.push(newUser);
+                localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+                
+                this.showMessage('Registration successful! (Demo mode - data saved locally)', 'success');
+                return true;
+            }
+        } catch (error) {
+            console.error('Error during registration:', error);
+            
+            // Fallback: save to localStorage for demo purposes
+            try {
+                const newUser = {
+                    id: Date.now(),
+                    username: userData.username,
+                    name: userData.name,
+                    email: userData.email,
+                    password: userData.password,
+                    role: 'user',
+                    created_at: new Date().toISOString(),
+                    last_login: null
+                };
+                
+                const existingData = localStorage.getItem('registeredUsers');
+                const registeredUsers = existingData ? JSON.parse(existingData) : [];
+                
+                // Check for duplicates in localStorage
+                const existingLocalUser = registeredUsers.find(u => 
+                    u.username.toLowerCase() === userData.username.toLowerCase() || 
+                    u.email.toLowerCase() === userData.email.toLowerCase()
+                );
+                
+                if (existingLocalUser) {
+                    this.showMessage('Username or email already exists', 'error');
+                    return false;
+                }
+                
+                registeredUsers.push(newUser);
+                localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+                
+                this.showMessage('Registration successful! (Demo mode - data saved locally)', 'success');
+                return true;
+            } catch (fallbackError) {
+                console.error('Fallback registration failed:', fallbackError);
+                this.showMessage('Registration failed. Please try again.', 'error');
+                return false;
+            }
         }
     }
 
