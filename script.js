@@ -296,11 +296,11 @@ class AuthSystem {
             const loginLink = navMenu.querySelector('a[href="login.html"]');
             
             // Add admin link for admin users
-            if (this.isAdmin() && !navMenu.querySelector('a[href="admin.html"]')) {
+            if (this.isAdmin() && !navMenu.querySelector('a[href="admin-dashboard.html"]')) {
                 const adminLi = document.createElement('li');
                 const adminA = document.createElement('a');
-                adminA.href = 'admin.html';
-                adminA.textContent = 'Admin Panel';
+                adminA.href = 'admin-dashboard.html';
+                adminA.textContent = 'Admin Dashboard';
                 adminA.className = 'admin-link';
                 adminLi.appendChild(adminA);
                 
@@ -314,7 +314,7 @@ class AuthSystem {
             
             // Remove admin link for non-admin users
             if (!this.isAdmin()) {
-                const existingAdminLink = navMenu.querySelector('a[href="admin.html"]');
+                const existingAdminLink = navMenu.querySelector('a[href="admin-dashboard.html"]');
                 if (existingAdminLink) {
                     existingAdminLink.parentElement.remove();
                 }
@@ -424,7 +424,7 @@ if (document.getElementById('loginForm')) {
             if (success) {
                 // Redirect to admin panel if admin, otherwise to home
                 if (authSystem.isAdmin()) {
-                    window.location.href = 'admin.html';
+                    window.location.href = 'admin-dashboard.html';
                 } else {
                     window.location.href = 'index.html';
                 }

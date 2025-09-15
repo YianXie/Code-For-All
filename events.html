@@ -950,10 +950,8 @@
              const adminLoginBtn = document.getElementById('admin-login-btn');
              
              if (isAdmin && currentUser) {
-                 // Show admin panel only for admin users
-                 adminPanel.style.display = 'block';
-                 adminUserDisplay.textContent = `(${currentUser.username || currentUser.name || 'Admin'})`;
-                 if (adminLoginBtn) adminLoginBtn.remove(); // Remove login button if it exists
+                 // Redirect to admin dashboard instead of showing inline panel
+                 window.location.href = 'admin-dashboard.html';
              } else {
                  // Hide admin panel completely for non-admin users
                  adminPanel.style.display = 'none';
