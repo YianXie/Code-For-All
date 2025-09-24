@@ -1,5 +1,5 @@
-# Created by https://www.toptal.com/developers/gitignore/api/react,node,macos,visualstudiocode
-# Edit at https://www.toptal.com/developers/gitignore?templates=react,node,macos,visualstudiocode
+# Created by https://www.toptal.com/developers/gitignore/api/macos,node,visualstudiocode
+# Edit at https://www.toptal.com/developers/gitignore?templates=macos,node,visualstudiocode
 
 ### macOS ###
 # General
@@ -174,19 +174,6 @@ dist
 # SvelteKit build / generate output
 .svelte-kit
 
-### react ###
-.DS_*
-**/*.backup.*
-**/*.back.*
-
-node_modules
-
-*.sublime*
-
-psd
-thumb
-sketch
-
 ### VisualStudioCode ###
 .vscode/*
 !.vscode/settings.json
@@ -206,4 +193,4 @@ sketch
 .history
 .ionide
 
-# End of https://www.toptal.com/developers/gitignore/api/react,node,macos,visualstudiocode
+# End of https://www.toptal.com/developers/gitignore/api/macos,node,visualstudiocode
